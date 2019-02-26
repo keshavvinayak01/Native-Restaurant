@@ -3,7 +3,7 @@ import {ScrollView,Text} from 'react-native';
 import { Card } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
 import { LEADERS } from '../shared/leaders';
-import { PROMOTIONS } from '../shared/leaders';
+import { PROMOTIONS } from '../shared/promotions';
 
 function RenderItem(props){
         const item = props.item;
@@ -45,11 +45,11 @@ class Home extends Component{
         render(){
                 return(
                         <ScrollView>
-                                <RenderItem item={this.render.state.dishes.filter((dish) => dish.featured[0])
+                                <RenderItem item={this.state.dishes.filter((dish) => dish.featured)[0]
                                 } />
-                                <RenderItem item={this.render.state.promotions.filter((promo) => promo.featured[0])
+                                <RenderItem item={this.state.promotions.filter((promo) => promo.featured)[0]
                                 } />
-                                <RenderItem item={this.render.state.leaders.filter((leaders) => leaders.featured[0])
+                                <RenderItem item={this.state.leaders.filter((leaders) => leaders.featured)[0]
                                 } />
                         </ScrollView>
                 );
