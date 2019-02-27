@@ -9,6 +9,19 @@ import { Icon } from 'react-native-elements';
 import { createStackNavigator,createDrawerNavigator, createAppContainer,DrawerItems,SafeAreaView } from 'react-navigation';
 import { requireNativeViewManager } from 'expo-core';
 import { Directions } from 'react-native-gesture-handler';
+import {connect} from 'react-redux';
+import { fetchDishes,fetchComments , fetchPromos,fetchLeaders} from
+'../redux/ActionCreators';
+const mapStateToProps = state => {
+        return{
+        }
+}
+const mapDispatchToProps = dispatch => ({
+        fetchDishes : () => dispatch(fetchDishes()),
+        fetchComments : () => dispatch(fetchComments()),
+        fetchPromos : () => dispatch(fetchPromos()),
+        fetchLeaders : () => dispatch(fetchLeaders()),
+});
 
 const ContactNavigator  = createStackNavigator({
         Contact : {screen : Contact}
@@ -49,7 +62,7 @@ const MenuNavigator  = createStackNavigator({
         Menu : { screen : Menu,
                         navigationOptions : ({navigation} ) => ({
                                 headerLeft : <Icon name='menu' size={24}
-                                color='white',
+                                color='white'
                                 onPress = {() => navigation.toggleDrawer()}  />
                         })                
         },
@@ -184,6 +197,18 @@ const styles = StyleSheet.create({
                 width : 80
         }
 })
-
+class Main extends Component {
+        componentDidMount(){
+                this.props.fetchDishes();
+                this.props.fetchComments();
+                this.props.fetchPromos();
+                this.props.fetchLeaders();
+        }
+        render(){
+                return(
+                        <MainNavigator />
+                );
+        }
+}
 const Main = createAppContainer(MainNavigator);
-export default Main;
+export default connect(mapStateToProps,mapDispatchToProps)(Main);
