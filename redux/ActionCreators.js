@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { set } from 'react-native/Libraries/Utilities/Dimensions';
 
 export const fetchComments = () => (dispatch) => {
         return fetch(baseUrl + 'comments')
@@ -132,4 +133,15 @@ export const leadersFailed = (errmess) => ({
 export const addLeaders = (leaders) => ({
         type : ActionTypes.ADD_LEADERS,
         payload: leaders
+});
+
+export const postFavourite = (dishId) => (dispatch) => {
+        setTimeout(() => {
+                dispatch(addFavourite(dishId));
+        },2000);
+}
+
+export const addFavourite = (dishId) => ({
+        type : ActionTypes.ADD_FAVOURITE,
+        payload : dishId
 });
