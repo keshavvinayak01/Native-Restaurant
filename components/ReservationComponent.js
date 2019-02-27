@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text,View,StyleSheet,
-        ScrollView,Picker,Switch,Button} from 'react-native';
+        ScrollView,Picker,Switch,Button,Modal} from 'react-native';
 import {Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
@@ -9,21 +9,29 @@ class Reservation extends Component {
                 this.state = {
                         guests : 1,
                         smoking : false,
-                        date : ''
+                        date : '',
+                        showModal : false
                 }
         }
         static navigationOptions = {
                 title : 'Reserve Table'
         }
+        toggleModal(){
+                this.setState({showModal : !this.state.showModal})
+        }
 
         handleReservation(){
                 console.log(JSON.stringify(this.state));
+                this.toggleModal();
+        }
+        resetForm(){
                 this.setState({
                         guests : 1,
                         smoking : false,
                         date : ''
                 });
         }
+
         render(){
                 return(
                         <ScrollView>
@@ -46,7 +54,7 @@ class Reservation extends Component {
                                 <View style={styles.formRow}>
                                 <Text style = {styles.formLabel} >
                                  Smoking/Non-Smoing?</Text>
-                                 <Switch style={styles.formItem} value={this.state.smoking}
+                                 <Switch style={styles.formItem} value={this.state.smoking ? 'Yes' : 'No' }
                                 onTintColor='#512DA8' onValueChange={(value) => 
                                 this.setState({smoking : value})}     
                                 ></Switch> 
@@ -86,6 +94,34 @@ class Reservation extends Component {
                                          'Learn more about this purple button'
                                         />
                                 </View>
+                                <Modal 
+                                        animationType = {'slide'}
+                                        transparent = {false}
+                                        visible = {this.state.showModal}
+                                        onDismiss = {() => {
+                                                this.handleReservation.toggleModal();
+                                                this.resetForm()}        
+                                        }
+                                        onRequestClose =  {() => {
+                                                this.handleReservation.toggleModal();
+                                                this.resetForm()}        
+                                        }
+                                        >
+                                        <View style={styles.modal}>
+                                        <Text style={styles.modalTitle}>Your Reservation</Text>
+                                        <Text style={styles.modalText}>Number of Guests : {this.state.guests}</Text>
+                                        <Text style={styles.modalText}>Smoking ? :{this.state.smoking} </Text>
+                                        <Text style={styles.modalText}>Date and Time : {this.state.date} </Text>
+                                        <Button 
+                                                onPress= {() => {
+                                                        this.handleReservation.toggleModal();
+                                                        this.resetForm()}        
+                                                }
+                                                color = '#512DA8'
+
+                                        />
+                                        </View>
+                                        </Modal>
                         </ScrollView>
                 );
         }
@@ -104,6 +140,22 @@ const styles = StyleSheet.create({
         },
         formItem : {
                 flex : 1
+        },
+        modal : {
+                justifyContent : 'center',
+                margin : 20
+        },
+        modalTitle : {
+                fontSize : 24,
+                fontWeight : 'bold',
+                backgroundColor : '#512DA8',
+                textAlign : 'center',
+                color : 'white',
+                marginBottom : 20
+        },
+        modalText : {
+                fontSize : 18,
+                margin : 10
         }
 })
 export default Reservation;
