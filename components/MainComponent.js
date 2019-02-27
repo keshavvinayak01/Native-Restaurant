@@ -12,6 +12,9 @@ import { Directions } from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import { fetchDishes,fetchComments , fetchPromos,fetchLeaders} from
 '../redux/ActionCreators';
+import Reservation from '/ReservationComponent';
+
+
 const mapStateToProps = state => {
         return{
         }
@@ -21,6 +24,23 @@ const mapDispatchToProps = dispatch => ({
         fetchComments : () => dispatch(fetchComments()),
         fetchPromos : () => dispatch(fetchPromos()),
         fetchLeaders : () => dispatch(fetchLeaders()),
+});
+
+const ReservationtNavigator  = createStackNavigator({
+        Reservation : {screen : Reservation}
+},{
+        navigationOptions : ({ navigation } ) => ({
+                headerStyle : {
+                        backgroundColor : '#512DA8'
+                },
+                headerTintColor : '#fff',
+                headerTitleStyle : {
+                        color : '#BADA55'
+                },
+                headerLeft : <Icon name='menu' size={24}
+                color='white'
+                onPress = {() => navigation.toggleDrawer()}  />
+        })
 });
 
 const ContactNavigator  = createStackNavigator({
@@ -169,7 +189,20 @@ const MainNavigator = createDrawerNavigator({
                                         color={tintColor}
                                         />
                                 )},
-        }
+        },
+        Reservation : {
+                screen : ReservationtNavigator,
+                navigationOptions : {
+                        title : 'Reserve Table',
+                        drawerLabel : 'Reserve Table',
+                        drawerIcon : ({ tintColor }) => (
+                                <Icon name='cutlery'
+                                type = 'font-awesome'
+                                size={24}
+                                color={tintColor}
+                                />
+                        )},
+}
 },{
         drawerBackgroundColor : '#D1C4E9',
         contentComponent : CustomDrawerContentComponent
