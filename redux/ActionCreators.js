@@ -190,3 +190,8 @@ export const postComment = (dishId,rating,author,comment) => (dispatch) => {
 	.catch(error => { console.log('Post comments ',error.message);
 		alert("Your comment could not be posted \n Error " + error.message)})
 }
+
+export const deleteFavourite = (dishId) => ({
+        type : ActionTypes.DELETE_FAVOURITE,
+        payload : dishId
+})

@@ -4,7 +4,8 @@ import {ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {baseUrl} from '../shared/baseUrl';
 import { Loading} from './LoadingComponent';
-
+import Swipeout from 'react-native-swipeout';
+import { deleteFavourite } from '../redux/ActionCreators'; 
 
 const mapStateToProps = state => {
         return{
@@ -13,15 +14,28 @@ const mapStateToProps = state => {
         }
 }
 
+const mapDispatchToProps = dispatch = ({
+        deleteFavourite : (dishId) => dispatch(deleteFavourite(dishId))
+});
+
 class Favourites extends Component{
         static navigationOptions = {
                 title : 'My Favourites'
         }
         render(){
                 const { navigate } = this.props.navigation;
-
+               
                 const renderMenuItem = ({item,index}) => {
+                        const rightButton = [
+                                {
+                                        text : 'Delete',
+                                        type : 'delete',
+                                        onPress = () => this.props.deleteFavourite(item.id)
+                                }
+                        ];
+
                         return(
+                                <Swipeout right = {rightButton} autoClose = {true}>
                                 <ListItem
                                         key={index}
                                         title={item.name}
@@ -29,7 +43,8 @@ class Favourites extends Component{
                                         hideCheveron = {true}
                                         onPress = {() => navigate('DishDetail',{dishId : item.id})}
                                         leftAvatar = {{source : {uri : baseUrl + item.image}}}
-                                ></ListItem>
+                                />
+                               </Swipeout>
 
                         );
                 }
@@ -58,4 +73,4 @@ class Favourites extends Component{
         }
 }
 
-export default connect(mapStateToProps)(Favourites);
+export default connect(mapStateToProps,mapDispatchToProps)(Favourites);
