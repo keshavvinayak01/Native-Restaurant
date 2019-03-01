@@ -1,18 +1,19 @@
 import React, {Component} from 'react';
 import Menu from  './MenuComponent';
 import Home from './HomeComponent';
+import Reservation from './ReservationComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
 import DishDetail from './DishDetailComponent';
 import {Platform,View,Image,StyleSheet,ScrollView,Text} from 'react-native';
 import { Icon } from 'react-native-elements';
-import { createStackNavigator,createDrawerNavigator, createAppContainer,DrawerItems,SafeAreaView } from 'react-navigation';
-import { requireNativeViewManager } from 'expo-core';
-import { Directions } from 'react-native-gesture-handler';
+import Favourites from './FavouriteComponent';
+import { createStackNavigator,createDrawerNavigator,DrawerItems,SafeAreaView } from 'react-navigation';
+// import { requireNativeViewManager } from 'expo-core'; 
 import {connect} from 'react-redux';
 import { fetchDishes,fetchComments , fetchPromos,fetchLeaders} from
 '../redux/ActionCreators';
-import Reservation from '/ReservationComponent';
+
 
 
 const mapStateToProps = state => {
@@ -26,18 +27,37 @@ const mapDispatchToProps = dispatch => ({
         fetchLeaders : () => dispatch(fetchLeaders()),
 });
 
-const ReservationtNavigator  = createStackNavigator({
+const ReservationNavigator  = createStackNavigator({
         Reservation : {screen : Reservation}
 },{
         navigationOptions : ({ navigation } ) => ({
                 headerStyle : {
-                        backgroundColor : '#512DA8'
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
                 },
                 headerTintColor : '#fff',
                 headerTitleStyle : {
                         color : '#BADA55'
                 },
-                headerLeft : <Icon name='menu' size={24}
+                headerLeft : <Icon name='menu'  size={24}
+                color='white'
+                onPress = {() => navigation.toggleDrawer()}  />
+        })
+});
+
+const FavouritesNavigator  = createStackNavigator({
+        Favourites : {screen : Favourites}
+},{
+        navigationOptions : ({ navigation } ) => ({
+                headerStyle : {
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
+                },
+                headerTintColor : '#fff',
+                headerTitleStyle : {
+                        color : '#BADA55'
+                },
+                headerLeft : <Icon name='menu'  size={24}
                 color='white'
                 onPress = {() => navigation.toggleDrawer()}  />
         })
@@ -48,7 +68,8 @@ const ContactNavigator  = createStackNavigator({
 },{
         navigationOptions : ({ navigation } ) => ({
                 headerStyle : {
-                        backgroundColor : '#512DA8'
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
                 },
                 headerTintColor : '#fff',
                 headerTitleStyle : {
@@ -65,7 +86,8 @@ const AboutNavigator  = createStackNavigator({
 },{
         navigationOptions :  ({ navigation } ) => ({
                 headerStyle : {
-                        backgroundColor : '#512DA8'
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
                 },
                 headerTintColor : '#fff',
                 headerTitleStyle : {
@@ -91,7 +113,8 @@ const MenuNavigator  = createStackNavigator({
         initialRouteName : 'Menu',
         navigationOptions : {
                 headerStyle : {
-                        backgroundColor : '#512DA8'
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
                 },
                 headerTintColor : '#fff',
                 headerTitleStyle : {
@@ -105,7 +128,8 @@ const HomeNavigator = createStackNavigator({
 },{
         navigationOptions : ({ navigation } ) => ({
                 headerStyle : {
-                        backgroundColor : '#512DA8'
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
                 },
                 headerTintColor : '#fff',
                 headerTitleStyle : {
@@ -118,15 +142,15 @@ const HomeNavigator = createStackNavigator({
 });
 const CustomDrawerContentComponent = (props) => (
         <ScrollView>
-                <SafeAreaView style={StyleSheet.container}
+                <SafeAreaView style={styles.container}
                 forceInset = {{top:'always',horizontal:'never' }}>
-                        <View style={StyleSheet.drawerHeader } >
+                        <View style={styles.drawerHeader} >
                                 <View style ={{flex:1}}>
-                                        <Image source ={requireNativeViewManager('./images/logo.png')}
-                                        style={styles.drawerImage} />
+                                        <Image source ={require('./images/logo.png')}
+                                        style={styles.DrawerImage} />
                                 </View>
                                 <View style = {{flex:2}} >
-                                <Text style = {styles.drawerHeaderText} >
+                                <Text style = {styles.DrawerHeaderText} >
                                         Shitty knockoff Restaurant                                
                                 </Text> 
                                 </View>
@@ -191,12 +215,24 @@ const MainNavigator = createDrawerNavigator({
                                 )},
         },
         Reservation : {
-                screen : ReservationtNavigator,
+                screen : ReservationNavigator,
                 navigationOptions : {
                         title : 'Reserve Table',
                         drawerLabel : 'Reserve Table',
                         drawerIcon : ({ tintColor }) => (
                                 <Icon name='cutlery'
+                                type = 'font-awesome'
+                                size={24}
+                                color={tintColor}
+                                />
+                        )},
+        Favourites : {
+                screen : FavouritesNavigator,
+                navigationOptions : {
+                        title : 'My Favourites',
+                        drawerLabel : 'My Favourites',
+                        drawerIcon : ({ tintColor }) => (
+                                <Icon name='heart'
                                 type = 'font-awesome'
                                 size={24}
                                 color={tintColor}
@@ -218,18 +254,18 @@ const styles = StyleSheet.create({
                 alignItems : 'center',
                 justifyContent : 'center',
                 flex : 1,
-                flexDirection : 'row'
+                flexDirection : 'column'
         },
-        drawHeaderText : {
+        DrawerHeaderText : {
                 color :  'white',
-                fontSize : 24,
-                fontWeight : 'bold'
+                fontSize : 20,
+                fontWeight : 'bold',
         },
-        drawerImage : {
-                margin : 10,
-                width : 80
+        DrawerImage : {
+                margin : 20,
+                width : 150,
         }
-})
+});
 class Main extends Component {
         componentDidMount(){
                 this.props.fetchDishes();
@@ -243,5 +279,4 @@ class Main extends Component {
                 );
         }
 }
-const Main = createAppContainer(MainNavigator);
 export default connect(mapStateToProps,mapDispatchToProps)(Main);

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList,View,Text} from 'react-native';
 import {Tile} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {baseUrl} from '../shared/baseUrl';
@@ -39,7 +39,7 @@ class Menu extends Component{
                                 caption={item.description}
                                 featured
                                 onPress = {() => navigate('DishDetail',{dishId : item.id})}
-                                image={{uri : baseUrl + item.image}}
+                                imageSrc={{uri : baseUrl + item.image}}
                                  />
                         );
                 }

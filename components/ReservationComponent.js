@@ -4,8 +4,10 @@ import {Text,View,StyleSheet,
 import {Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
+
 class Reservation extends Component {
         constructor(props){
+                super(props);
                 this.state = {
                         guests : 1,
                         smoking : false,
@@ -54,9 +56,9 @@ class Reservation extends Component {
                                 <View style={styles.formRow}>
                                 <Text style = {styles.formLabel} >
                                  Smoking/Non-Smoing?</Text>
-                                 <Switch style={styles.formItem} value={this.state.smoking ? 'Yes' : 'No' }
-                                onTintColor='#512DA8' onValueChange={(value) => 
-                                this.setState({smoking : value})}     
+                                 <Switch style={styles.formItem} value={this.state.smoking}
+                                trackColor='#512DA8' onValueChange={(thing) => 
+                                this.setState({smoking : thing})}     
                                 ></Switch> 
                                 </View>
                                 <View style={styles.formRow}>
@@ -67,7 +69,7 @@ class Reservation extends Component {
                                         format = ''
                                         mode='datetime'
                                         placeholders = 'Select Date and Time'
-                                        minDate = '20189-01-01'
+                                        minDate = '2018-01-01'
                                         confirmBtnText = 'Confirm'
                                         cancelBtnText = 'Cancel'
                                         customStyles = {{
@@ -99,22 +101,23 @@ class Reservation extends Component {
                                         transparent = {false}
                                         visible = {this.state.showModal}
                                         onDismiss = {() => {
-                                                this.handleReservation.toggleModal();
+                                                this.handleReservation();
                                                 this.resetForm()}        
                                         }
                                         onRequestClose =  {() => {
-                                                this.handleReservation.toggleModal();
+                                                this.handleReservation();
                                                 this.resetForm()}        
                                         }
                                         >
                                         <View style={styles.modal}>
                                         <Text style={styles.modalTitle}>Your Reservation</Text>
                                         <Text style={styles.modalText}>Number of Guests : {this.state.guests}</Text>
-                                        <Text style={styles.modalText}>Smoking ? :{this.state.smoking} </Text>
+                                        <Text style={styles.modalText}>Smoking ? :{this.state.smoking ? "Yes" : "No"} </Text>
                                         <Text style={styles.modalText}>Date and Time : {this.state.date} </Text>
-                                        <Button 
+                                        <Button
+                                        title = "Okay" 
                                                 onPress= {() => {
-                                                        this.handleReservation.toggleModal();
+                                                        this.handleReservation();
                                                         this.resetForm()}        
                                                 }
                                                 color = '#512DA8'
@@ -125,7 +128,8 @@ class Reservation extends Component {
                         </ScrollView>
                 );
         }
-}
+};
+export default Reservation;
 const styles = StyleSheet.create({
         formRow : {
                 alignItems : 'center',
@@ -158,4 +162,3 @@ const styles = StyleSheet.create({
                 margin : 10
         }
 })
-export default Reservation;

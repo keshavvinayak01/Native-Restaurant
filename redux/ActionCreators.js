@@ -23,7 +23,7 @@ export const fetchComments = () => (dispatch) => {
         .catch(error => dispatch(commentsFailed(error.message)))
 }
 
-export const commentsFailed = (errmess) = ({
+export const commentsFailed = (errmess) =>+ ({
         type : ActionTypes.COMMENTS_FAILED,
         payload : errmess
 });
@@ -57,6 +57,10 @@ export const fetchDishes = () => (dispatch) => {
 export const dishesLoading = () => ({
         type : ActionTypes.DISHES_LOADING 
 });
+export const addComment = (comment) =>  ({
+	type:ActionTypes.ADD_COMMENT,
+	payload: comment
+});
 
 export const dishesFailed = (errmess) => ({
         type : ActionTypes.DISHES_FAILED,
@@ -66,6 +70,8 @@ export const addDishes = (dishes) => ({
         type : ActionTypes.ADD_DISHES,
         payload: dishes
 });
+
+
 
 export const fetchPromos = () => (dispatch) => {
         dispatch(promosLoading());
@@ -145,3 +151,42 @@ export const addFavourite = (dishId) => ({
         type : ActionTypes.ADD_FAVOURITE,
         payload : dishId
 });
+
+export const postComment = (dishId,rating,author,comment) => (dispatch) => {
+	
+	const newComment = {
+		dishId : dishId,
+		rating : rating,
+		author : author,
+		comment : comment
+	}
+
+	newComment.date = new Date().toISOString();
+	newComment.rating = parseFloat(newComment.rating);
+	return fetch(baseUrl + 'comments', {
+		method : 'POST',
+		body : JSON.stringify(newComment),
+		headers : {
+			'Content-type' : 'application/json'
+		},
+		credentials : 'same-origin'
+	})
+	.then(response => {
+			if(response.ok){
+				return response;
+			}
+			else{
+				var error = new Error('Error ' + response.status + ': ' + 
+				 response.statusText);
+				error.response = response;
+				throw(error);
+			}
+		}, error => {
+			var errormess = new Error(error.message);
+			throw(errormess);
+		})
+	.then(response => response.json())
+	.then(response => dispatch(addComment(response)))
+	.catch(error => { console.log('Post comments ',error.message);
+		alert("Your comment could not be posted \n Error " + error.message)})
+}
