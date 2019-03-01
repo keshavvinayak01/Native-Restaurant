@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList,View,Text} from 'react-native';
+import {FlatList,View,Text,Alert} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {connect} from 'react-redux';
 import {baseUrl} from '../shared/baseUrl';
@@ -30,7 +30,24 @@ class Favourites extends Component{
                                 {
                                         text : 'Delete',
                                         type : 'delete',
-                                        onPress = () => this.props.deleteFavourite(item.id)
+                                        onPress = () => {
+                                                Alert.alert(
+                                                        'Delete Favourite',
+                                                        'Are you Sure you want to delete your favourite dish  ' + 
+                                                        item.name + ' ?',
+                                                        [
+                                                                {
+                                                                        text:'Cancel',onPress : () => console.log(
+                                                                        item.name + "Not Deleted ! ") ,
+                                                                        style : 'cancel'
+                                                                },
+                                                                {
+                                                                        text:'Okay',onPress : () => this.props.deleteFavourite(item.id) 
+                                                                }
+                                                         ],
+                                                         {cancelable : false}
+                                                );
+                                        }
                                 }
                         ];
 
