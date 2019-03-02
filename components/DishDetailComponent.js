@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
-import { View,Text,ScrollView,FlatList,StyleSheet,Modal,Button,TextInput,Alert,PanResponder} from 'react-native';
+import { View,Text,ScrollView,FlatList,StyleSheet,Modal,Button,TextInput,Alert,PanResponder,Share} from 'react-native';
 import { Card, Icon,Input,Rating}  from 'react-native-elements';
 import {connect} from 'react-redux';
 import {baseUrl} from '../shared/baseUrl';
 import { postFavourite,postComment } from '../redux/ActionCreators';
 import * as Animatable from 'react-native-animatable';
+
+
 
 const mapStateToProps = state => {
         return{
@@ -67,6 +69,15 @@ function RenderDish(props){
                         }
                 }
         });
+        const shareDish = (title,message,url) => {
+                Share.share({
+                        title : title,
+                        message : title + ': ' + message + ' ' + url,
+                        url : url
+                }, {
+                        dialogTitle : 'Share ' + title
+                });
+        }
         if(dish != null){
                 return(
                         <Animatable.View animation="fadeInDown" duration={2000}
@@ -79,7 +90,7 @@ function RenderDish(props){
                                 <Text style={{margin:10}}>
                                         {dish.description}
                                 </Text>
-                                <View style={{flex:4,flexDirection:'row',justifyContent:'center',
+                                <View style={{flex:6,flexDirection:'row',justifyContent:'center',
                         alignItems:'center'}}>
                                 <Icon  
                                         style={{flex:2}}
@@ -98,6 +109,15 @@ function RenderDish(props){
                                         type='font-awesome'
                                         color='#512DA8'
                                         onPress = {() => props.openReview()} 
+                                         />
+                                <Icon  
+                                        style={{flex:2}}
+                                        raised
+                                        reverse
+                                        name={ 'share' }
+                                        type='font-awesome'
+                                        color='#51D2A8'
+                                        onPress = {() => shareDish(dish.name,dish.description,baseUrl + dish.image)} 
                                          />
                                          
                                         </View>
