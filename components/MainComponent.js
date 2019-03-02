@@ -3,6 +3,7 @@ import Menu from  './MenuComponent';
 import Home from './HomeComponent';
 import Reservation from './ReservationComponent';
 import Contact from './ContactComponent';
+import Login from './LoginComponent';
 import About from './AboutComponent';
 import DishDetail from './DishDetailComponent';
 import {Platform,View,Image,StyleSheet,ScrollView,Text} from 'react-native';
@@ -29,6 +30,24 @@ const mapDispatchToProps = dispatch => ({
 
 const ReservationNavigator  = createStackNavigator({
         Reservation : {screen : Reservation}
+},{
+        navigationOptions : ({ navigation } ) => ({
+                headerStyle : {
+                        backgroundColor : '#512DA8',
+                        paddingLeft : 20
+                },
+                headerTintColor : '#fff',
+                headerTitleStyle : {
+                        color : '#BADA55'
+                },
+                headerLeft : <Icon name='menu'  size={24}
+                color='white'
+                onPress = {() => navigation.toggleDrawer()}  />
+        })
+});
+
+const LoginNavigator  = createStackNavigator({
+        Login : {screen : Login}
 },{
         navigationOptions : ({ navigation } ) => ({
                 headerStyle : {
@@ -161,6 +180,20 @@ const CustomDrawerContentComponent = (props) => (
 );
 
 const MainNavigator = createDrawerNavigator({ 
+        Login : {
+                screen : LoginNavigator,
+                navigationOptions : {
+                        title : 'Login',
+                        drawerLabel : 'Login',
+                        drawerIcon : ({ tintColor }) => (
+                                <Icon name='sign-in'
+                                type = 'font-awesome'
+                                size={24}
+                                color={tintColor}
+                                />
+                        )
+                }
+        },
         Home : {
                 screen : HomeNavigator,
                 navigationOptions : {
@@ -225,7 +258,7 @@ const MainNavigator = createDrawerNavigator({
                                 size={24}
                                 color={tintColor}
                                 />
-                        )},
+                        )}},
         Favourites : {
                 screen : FavouritesNavigator,
                 navigationOptions : {
@@ -240,6 +273,7 @@ const MainNavigator = createDrawerNavigator({
                         )},
 }
 },{
+        initialRouteName : 'Home',
         drawerBackgroundColor : '#D1C4E9',
         contentComponent : CustomDrawerContentComponent
 });

@@ -191,7 +191,7 @@ export const postComment = (dishId,rating,author,comment) => (dispatch) => {
 		alert("Your comment could not be posted \n Error " + error.message)})
 }
 
-export const deleteFavourite = (dishId) => ({
-        type : ActionTypes.DELETE_FAVOURITE,
-        payload : dishId
-})
+export const deleteFavorite = (dishId) => ({
+        type: ActionTypes.DELETE_FAVORITE,
+        payload: dishId
+    });  
