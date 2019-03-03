@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text,View,StyleSheet,Picker,Switch,Button,Alert} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import * as Animatable from 'react-native-animatable';
-import { Permissions, Notifications} from 'expo';
+import { Permissions, Notifications,Calendar} from 'expo';
 
 class Reservation extends Component {
         constructor(props){
@@ -16,6 +16,13 @@ class Reservation extends Component {
         static navigationOptions = {
                 title : 'Reserve Table'
         }
+        resetForm(){
+                this.setState({
+                        guests : 1,
+                        smoking : false,
+                        date : ''
+                });
+        }
         handleReservation(){
                 console.log(JSON.stringify(this.state));
                 Alert.alert(
@@ -25,27 +32,43 @@ class Reservation extends Component {
                         [
                                 {
                                         text : 'Cancel',
-                                        onPress : () => {console.log('Cancel Pressed');this.handleReservation.resetForm()},
+                                        onPress : () => {console.log('Cancel Pressed');this.resetForm()},
                                         style : 'cancel'
                                 },
                                 {
                                         text : 'OK',
                                         onPress : () => {
+                                                this.addReservationToCalendar(this.state.date);
                                                 this.presentLocalNotification(this.state.date);
-                                                this.resetForm();
                                         }
                                 }
                         ],
                         { cancelable : false}
                 );
-                resetForm();
         }
-        resetForm(){
-                this.setState({
-                        guests : 1,
-                        smoking : false,
-                        date : ''
-                });
+        
+        async obtainCalendarPermission(){
+                let permission = await Permissions.getAsync(Permissions.CALENDAR);
+                if(permission.status !== 'granted'){
+                        permission = await Permissions.askAsync(Permissions.CALENDAR);
+                        if(permission.status !== 'granted'){
+                                Alert.alert('Permision not granted to mark your calendar  ! ');
+                        }
+                }
+                return permission;
+        }
+
+        async addReservationToCalendar(date){
+                await this.obtainCalendarPermission();
+                // console.log('Permission done');
+                Calendar.createEventAsync(Calendar.DEFAULT,{
+                        title : 'Con Fusion Table Reservation',
+                        startDate : new Date(Date.parse(date)),
+                        endDate : new Date(Date.parse(date) + 2*60*60*1000),
+                        timeZone : 'Asia/Hong_Kong',
+                        location : '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+                })
+                // console.log('This ran ?');
         }
         async obtainNotificationPermission(){
                 let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
@@ -61,7 +84,7 @@ class Reservation extends Component {
                 await this.obtainNotificationPermission();
                 Notifications.presentLocalNotificationAsync({
                         title : 'Your Reservation',
-                        body : 'Reservation for  ' + date + ' requested',
+                        body : 'Reservation for  ' + this.state.date + ' requested',
                         ios : {
                                 sound : true
                         },
@@ -71,6 +94,7 @@ class Reservation extends Component {
                                 color : '#512DA8'
                         }
                 })
+                this.resetForm();
         }
 
         render(){

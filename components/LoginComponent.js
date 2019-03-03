@@ -22,8 +22,9 @@ class LoginTab extends Component{
                                         this.setState({password : userinfo.password});
                                         this.setState({remember : true});
                                 }
-                        })
+                        });
         }
+
         static navigationOptions = {
                 title: 'Login',
                 tabBarIcon: ({ tintColor, focused }) => (
@@ -132,6 +133,22 @@ class RegisterTab extends Component {
                     }
                 }
         }
+
+        getImageFromPhone = async () => {
+                const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        
+                if (cameraRollPermission.status === 'granted') {
+                    let SelectedImage = await ImagePicker.launchImageLibraryAsync({
+                        allowsEditing: true,
+                        aspect: [4, 3],
+                    });
+                    if ( !SelectedImage.cancelled ) {
+                        console.log(SelectedImage);
+                        this.processImage(SelectedImage.uri);
+                    }
+                }
+        }
+
         processImage = async (imageUri) => {
                 let processedImage = await ImageManipulator.manipulateAsync(
                     imageUri, 
@@ -187,6 +204,10 @@ class RegisterTab extends Component {
                                 <Button
                                         title='Camera'
                                         onPress = {this.getImageFromCamera}
+                                />
+                                 <Button
+                                        title='Gallery'
+                                        onPress = {this.getImageFromPhone}
                                 />
                         </View>
                                 <Input
@@ -277,7 +298,9 @@ const styles = StyleSheet.create({
         imageContainer : {
                 flex : 1,
                 flexDirection : 'row',
-                margin : 20
+                margin : 20,
+                justifyContent : 'space-around'
+
         },
         image : {
                 margin : 10,
