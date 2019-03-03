@@ -5,7 +5,7 @@ https://expo.io/builds/9457d1e7-e922-407c-a498-286de303b0bd
 
 ```console
 foo@bar:~$ cd json-server
-foo@bar/json-server:~$./script.sh
+foo@bar:~json-server$ ./script.sh
 ```
 
 #### Initialize the project folder by handling all the dependancies
