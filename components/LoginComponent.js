@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {View,StyleSheet,Text,ScrollView,Image} from 'react-native';
 import { Icon,Input,CheckBox,Button} from 'react-native-elements';
-import { SecureStore,Permissions,ImagePicker,Asset,ImageManipulator } from 'expo';
+import { Camera,SecureStore,Permissions,ImagePicker,Asset,ImageManipulator } from 'expo';
 import {createBottomTabNavigator} from 'react-navigation';
-import {baseUrl} from './shared/baseUrl';
+import {baseUrl} from '../shared/baseUrl';
 class LoginTab extends Component{
         constructor(props){
                 super(props);
@@ -25,22 +25,23 @@ class LoginTab extends Component{
                         })
         }
         static navigationOptions = {
-                title : 'Login',
-                tabBarIcon :  ({tintColor}) => {
-                        <Icon
-                                name="sign-in"
-                                type='font-awesome'
-                                size={24}z
-                                iconStyle={{color:tintColor}}
-                                />
-                }
-        };
+                title: 'Login',
+                tabBarIcon: ({ tintColor, focused }) => (
+                    <Icon
+                      name='sign-in'
+                      type='font-awesome'            
+                      size={24}
+                      iconStyle={{ color: tintColor }}
+                    />
+                  ) 
+            };
         handleLogin(){
                 console.log(JSON.stringify(this.state));
                 if(this.state.remember){
                         SecureStore.setItemAsync(
                                 'userinfo',
-                                JSON.stringify({username : this.state.username,password : this.state.password})
+                                JSON.stringify({username : this.state.username,
+                                        password : this.state.password})
                         )
                         .catch((error) => console.log("Could not save user info ",error));
                 }
@@ -89,7 +90,7 @@ class LoginTab extends Component{
                                 <View style={styles.formButton}>
                                 <Button 
                                                 onPress = {()=> this.props.navigation.navigate('Register')}
-                                                title='Login'
+                                                title='Register'
                                                 icon = {<Icon name='user-plus' type='font-awesome'
                                                 size={24} 
                                                 color='blue' />}
@@ -105,53 +106,56 @@ class LoginTab extends Component{
 class RegisterTab extends Component {
         constructor(props){
                 super(props);
+
                 this.state = {
-                        username : '',
-                        password : '',
-                        remember : false,
-                        firstname : '',
-                        lastname : '',
-                        email : '',
-                        imageUrl : baseUrl + './images/logo.png'
+                        username: '',
+                        password: '',
+                        firstname: '',
+                        lastname: '',
+                        email: '',
+                        remember: false,
+                        imageUrl: baseUrl + 'images/logo.png'
                 }
         }
-
+        getImageFromCamera = async () => {
+                const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
+                const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        
+                if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
+                    let capturedImage = await ImagePicker.launchCameraAsync({
+                        allowsEditing: true,
+                        aspect: [4, 3],
+                    });
+                    if (!capturedImage.cancelled) {
+                        console.log(capturedImage);
+                        this.processImage(capturedImage.uri);
+                    }
+                }
+        }
         processImage = async (imageUri) => {
-                let processedUnage = await ImageManipulator.manipulate(
-                        imageUri,
-                        [
-                                {resize: {width:400}}
-                        ],
-                        {format : 'png'}
+                let processedImage = await ImageManipulator.manipulateAsync(
+                    imageUri, 
+                    [
+                        {resize: {width: 400}}
+                    ],
+                    {format: 'png'}
                 );
-                this.setState({imageUrl : processedImage.uri})
-        }
-        static navigationOptions = {
-                title : 'Register',
-                tabBarIcon :  ({tintColor}) => {
-                        <Icon
-                                name="user-plus"
-                                type='font-awesome'
-                                size={24}
-                                iconStyle={{color:tintColor}}
-                                />
-                }
-};
-        getImageFromCamera = async () =>  {
-                const cameraPermission = await Permissions.AskSync(Permissions.CAMERA);
-                const cameraRollPermission = await Permissions.AskSync(Permissions.CAMERA_ROLL);
+                console.log(processedImage);
+                this.setState({imageUrl: processedImage.uri });
+        
+            }
+            static navigationOptions = {
+                title: 'Register',
+                tabBarIcon: ({ tintColor, focused }) => (
+                    <Icon
+                      name='user-plus'
+                      type='font-awesome'            
+                      size={24}
+                      iconStyle={{ color: tintColor }}
+                    />
+                  ) 
+            };
 
-                if(cameraPermission.status ==='granted' & cameraRollPermission.status === 'granted'){
-                        let capturedImage = await ImagePicker.launchCameraAsync({
-                                allowEditing : true,
-                                aspect : [4,3]
-                        });
-
-                        if(!capturedImage.cancelled){
-                                this.processImage(capturedImage.uri);
-                        }
-                }
-        };
 
 
         handleRegister()  {
